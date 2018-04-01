@@ -1,2 +1,2 @@
 # Blackjack
-Blackjack (21) game
+Text-based blackjack (21) game.
