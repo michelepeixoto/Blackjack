@@ -20,23 +20,33 @@ class Deck:
 class Player:
 
     def __init__(self, name, money):
-        self.name = name
-        self.money = money
+        self.name = str(name)
+        self.money = int(money)
         self.hand = []
         pass
 
+    def __str__(self):
+        return "{}: ${}".format(self.name, self.money)
+
     def lose_money(self, money):
-        self.money -= money
+        self.money -= int(money)
         pass
 
     def win_money(self, money):
-        self.money += money
+        self.money += int(money)
         pass
 
 
 def new_round(player, dealer):
     deck = Deck
-    print("Aces are worth 11, face cards are worth 10.")
+    bet = int(input("How much will you bet? Enter a number:\n"))
+    if bet > player.money:
+        print("Not enough funds.")
+        new_round(player, dealer)
+        pass
+    else:
+        player.lose_money(bet)
+        pass
     print("Dealing cards...")
     player.hand = [deck.card(), deck.card()]
     dealer.hand = [deck.card(), deck.card()]
@@ -84,13 +94,17 @@ def new_round(player, dealer):
         else: 
             continue
         pass
-    win_check(player, dealer)
+    winner = win_check(player, dealer)
+    print(winner.name+" wins!")
+    winner.win_money(bet*2)
+    print("Ending totals:")
+    print(player)
     choice = input("Play again? Type y/n\n")
     if choice == "y":
         new_round(player, dealer)
         pass
     else:
-        print("Thanks for playing {}.\nYour ending balance: {}".format(player.name, player.money))
+        print("Thanks for playing {}.\nYour ending balance: ${}".format(player.name, player.money))
         game()
         pass
     pass
@@ -118,15 +132,15 @@ def win_check(player, dealer):
             dealer_points += dealer.hand[cards]
             pass
     if player_points > dealer_points and player_points <= 21:
-        print(player.name+" wins!")
+        return player
         pass
     elif dealer_points > 21 and player_points <= 21:
-        print(player.name+" wins!")
+        return player
         pass
     elif player_points == 21 and dealer_points != 21:
-        print(player.name+" wins!")
+        return player
     else:
-        print(dealer.name+" wins.")
+        return dealer
         pass
     pass
 
@@ -135,17 +149,11 @@ def game():
     name = input("What is your name?\n")
     money = input("How much will you play with?\n")
     player = Player(name, money)
-    dealer = Player("Dealer", 0)
+    dealer = Player("Dealer", 0)    
+    print("Aces are worth 11, face cards are worth 10.")
     print("Have fun!")
     new_round(player, dealer)
     pass
 
 
 game()
-
-
-
-
-
-
-
